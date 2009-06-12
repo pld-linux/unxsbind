@@ -1,0 +1,22 @@
+diff -ur unxsbind-1.11/makefile unxsbind-1.11.new/makefile
+--- unxsbind-1.11/makefile	2009-06-08 12:30:51.000000000 +0200
++++ unxsbind-1.11.new/makefile	2009-06-12 15:51:25.874012635 +0200
+@@ -14,8 +14,9 @@
+ #
+ CFLAGS= -Wall
+ RELEASE= 1.0
++libdir = @libdir@
+ 
+-LIBS= -L/usr/lib/mysql -L/usr/lib/openisp -lz -lcrypt -lm -lssl -lucidr -lmysqlclient
++LIBS= -L$(libdir)/mysql -L$(libdir)/openisp -lz -lcrypt -lm -lssl -lucidr -lmysqlclient
+ 
+ all: iDNS.cgi
+ 
+@@ -126,5 +127,5 @@
+ 	rm -f *.o iDNS.cgi
+ 
+ install: iDNS.cgi
+-	install -s iDNS.cgi /var/www/unxs/cgi-bin/iDNS.cgi
++	install -s iDNS.cgi $(DESTDIR)/usr/share/unxs/cgi-bin/iDNS.cgi
+ 	rm iDNS.cgi
+Tylko w unxsbind-1.11.new/: makefile~
