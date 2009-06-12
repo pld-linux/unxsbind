@@ -8,13 +8,13 @@ Source0:	http://unixservice.com/source/%{name}-%{version}.tar.gz
 # Source0-md5:	e6e5e218f4c9449ca2f58fa42a50d638
 URL:		http://openisp.net/openisp/unxsBind
 Patch0:		%{name}-include.patch
-Requires:	rrdtool
+BuildRequires:	mysql-devel
 BuildRequires:	ucidr
 BuildRequires:	zlib-devel
-BuildRequires:	mysql-devel
-Requires:	unxsadmin >= 1.2
 Requires:	bind >= 9.3.4
 Requires:	bind-utils
+Requires:	rrdtool
+Requires:	unxsadmin >= 1.2
 
 %description
 unxsBind iDNS provides a professional DNS BIND 9 manager. For 1 to
@@ -53,21 +53,21 @@ command.
 %build
 %{__make} \
 	DESTDIR=$RPM_BUILD_ROOT \
-	libdir=%{_libdir} 
+	libdir=%{_libdir}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT/usr/share/unxs/cgi-bin
+install -d $RPM_BUILD_ROOT%{_datadir}/unxs/cgi-bin
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT/usr/share/idns
-install -d $RPM_BUILD_ROOT/usr/share/iDNS/data
-install -d $RPM_BUILD_ROOT/usr/share/iDNS/setup9
-install -d $RPM_BUILD_ROOT/usr/share/iDNS/admin/templates
-install -d $RPM_BUILD_ROOT/usr/local/share/iDNS/org/templates
+install -d $RPM_BUILD_ROOT%{_datadir}/idns
+install -d $RPM_BUILD_ROOT%{_datadir}/iDNS/data
+install -d $RPM_BUILD_ROOT%{_datadir}/iDNS/setup9
+install -d $RPM_BUILD_ROOT%{_datadir}/iDNS/admin/templates
+install -d $RPM_BUILD_ROOT%{_prefix}/local/share/iDNS/org/templates
 install -d $RPM_BUILD_ROOT/var/log/named
 
 cp -u images/* $RPM_BUILD_ROOT/var/www/unxs/html/images/
