@@ -1,3 +1,93 @@
+Tylko w unxsbind-1.11.new/interfaces/admin: a.out
+diff -ur unxsbind-1.11/interfaces/admin/makefile unxsbind-1.11.new/interfaces/admin/makefile
+--- unxsbind-1.11/interfaces/admin/makefile	2009-05-13 18:16:33.000000000 +0200
++++ unxsbind-1.11.new/interfaces/admin/makefile	2009-06-14 19:13:44.844139121 +0200
+@@ -12,7 +12,9 @@
+ CGINAME=idnsAdmin.cgi
+ 
+ CFLAGS=-Wall
+-LIBS=-L/usr/lib/mysql -L/usr/lib/openisp -lmysqlclient -ltemplate -lucidr -lz -lcrypt -lm -lssl
++libdir = @libdir@
++
++LIBS=-L$(libdir)/mysql -L$(libdir)/openisp -lmysqlclient -ltemplate -lucidr -lz -lcrypt -lm -lssl
+ 
+ interface.cgi: main.o adminuser.o customer.o customercontact.o glossary.o zone.o resource.o bulkop.o report.o \
+ 		restorezone.o restoreresource.o dashboard.o ../../cgi.o 
+@@ -59,6 +61,6 @@
+ 	rm -f *.o *.cgi
+ 	
+ install: interface.cgi
+-	install -s interface.cgi /var/www/unxs/cgi-bin/$(CGINAME)
++	install -s interface.cgi $(DESTDIR)/usr/share/unxs/cgi-bin/$(CGINAME)
+ 	rm -f interface.cgi
+ 
+Tylko w unxsbind-1.11.new/interfaces/admin: makefile~
+diff -ur unxsbind-1.11/interfaces/errorlog/makefile unxsbind-1.11.new/interfaces/errorlog/makefile
+--- unxsbind-1.11/interfaces/errorlog/makefile	2009-05-13 18:16:33.000000000 +0200
++++ unxsbind-1.11.new/interfaces/errorlog/makefile	2009-06-14 19:20:17.025253046 +0200
+@@ -10,7 +10,9 @@
+ #
+ 
+ CFLAGS= -DLinux -Wall
+-LIBS= -L/usr/lib/mysql -lmysqlclient -lssl -lz
++libdir = @libdir@
++
++LIBS= -L$(libdir)/mysql -lmysqlclient -lssl -lz
+ 
+ idns-logerror: main.o
+ 	cc main.o -o idns-logerror $(LIBS)
+@@ -22,5 +24,5 @@
+ 	rm -f *.o idns-logerror
+ 	
+ install: idns-logerror
+-	install -m 700 -s idns-logerror /usr/sbin/idns-logerror
++	install -s idns-logerror $(DESTDIR)/usr/sbin/idns-logerror
+ 	rm -f idns-logerror
+Tylko w unxsbind-1.11.new/interfaces/errorlog: makefile~
+diff -ur unxsbind-1.11/interfaces/org/makefile unxsbind-1.11.new/interfaces/org/makefile
+--- unxsbind-1.11/interfaces/org/makefile	2009-05-13 18:16:31.000000000 +0200
++++ unxsbind-1.11.new/interfaces/org/makefile	2009-06-14 19:12:41.350047739 +0200
+@@ -12,7 +12,9 @@
+ CGINAME= idnsOrg.cgi
+ 
+ CFLAGS=-Wall
+-LIBS=-L/usr/lib/mysql -L/usr/lib/openisp -lmysqlclient -ltemplate -lucidr -lz -lcrypt -lm -lssl
++libdir = @libdir@
++
++LIBS=-L$(libdir)/mysql -L$(libdir)/openisp -lmysqlclient -ltemplate -lucidr -lz -lcrypt -lm -lssl
+ 
+ interface.cgi: main.o zone.o resource.o glossary.o bulkop.o ../../cgi.o 
+ 	cc main.o zone.o resource.o glossary.o bulkop.o ../../cgi.o -o interface.cgi $(LIBS)
+@@ -36,6 +38,6 @@
+ 	rm -f *.o *.cgi
+ 	
+ install: interface.cgi
+-	install -s interface.cgi /var/www/unxs/cgi-bin/$(CGINAME)
++	install -s interface.cgi $(DESTDIR)/usr/share/unxs/cgi-bin/$(CGINAME)
+ 	rm -f interface.cgi
+ 
+Tylko w unxsbind-1.11.new/interfaces/org: makefile~
+diff -ur unxsbind-1.11/interfaces/thit/makefile unxsbind-1.11.new/interfaces/thit/makefile
+--- unxsbind-1.11/interfaces/thit/makefile	2009-05-13 18:16:33.000000000 +0200
++++ unxsbind-1.11.new/interfaces/thit/makefile	2009-06-14 19:22:21.133326201 +0200
+@@ -10,7 +10,8 @@
+ #
+ 
+ CFLAGS=-Wall
+-LIBS=-L/usr/lib/mysql -lmysqlclient -lssl -lz -lm
++libdir = @libdir@
++LIBS=-L$(libdir)/mysql -lmysqlclient -lssl -lz -lm
+ 
+ tHitCollector: main.o
+ 	cc main.o -o tHitCollector $(LIBS)
+@@ -22,5 +23,5 @@
+ 	rm -f *.o tHitCollector
+ 	
+ install: tHitCollector
+-	install -m 700 -s tHitCollector /usr/sbin/tHitCollector
++	install -s tHitCollector $(DESTDIR)/usr/sbin/tHitCollector
+ 	rm -f tHitCollector
+Tylko w unxsbind-1.11.new/interfaces/thit: makefile~
 diff -ur unxsbind-1.11/makefile unxsbind-1.11.new/makefile
 --- unxsbind-1.11/makefile	2009-06-08 12:30:51.000000000 +0200
 +++ unxsbind-1.11.new/makefile	2009-06-12 15:51:25.874012635 +0200
