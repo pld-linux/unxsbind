@@ -67,36 +67,36 @@ install -d $RPM_BUILD_ROOT%{_datadir}/idns
 install -d $RPM_BUILD_ROOT%{_datadir}/iDNS/data
 install -d $RPM_BUILD_ROOT%{_datadir}/iDNS/setup9
 install -d $RPM_BUILD_ROOT%{_datadir}/iDNS/admin/templates
-install -d $RPM_BUILD_ROOT%{_prefix}/local/share/iDNS/org/templates
+install -d $RPM_BUILD_ROOT%{_datadir}/iDNS/org/templates
+install -d $RPM_BUILD_ROOT%{_datadir}/unxs/html/{css,images}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}
+install -d $RPM_BUILD_ROOT%{_sbindir}
 install -d $RPM_BUILD_ROOT/var/log/named
 
-cp -u images/* $RPM_BUILD_ROOT/var/www/unxs/html/images/
-cp -u interfaces/admin/templates/images/* $RPM_BUILD_ROOT/var/www/unxs/html/images/
-cp -u interfaces/admin/templates/css/* $RPM_BUILD_ROOT/var/www/unxs/html/css/
-cp `find ./interfaces/admin/templates/ -type f -print` %{_prefix}/local/share/iDNS/admin/templates/
-cp `find ./interfaces/org/templates/ -type f -print` %{_prefix}/local/share/iDNS/org/templates/
-cp data/*.txt %{_prefix}/local/share/iDNS/data/
-chown -R mysql:mysql %{_prefix}/local/share/iDNS/data
-cp setup9/rndc.conf %{_sysconfdir}/rndc.conf
-cp setup9/rndc.key %{_sysconfdir}/rndc.key
-cp setup9/* %{_prefix}/local/share/iDNS/setup9/
-cp agents/mysqlcluster/mysqlcluster.sh %{_sbindir}/
-%{_bindir}/dig @e.root-servers.net . ns > %{_prefix}/local/share/iDNS/setup9/root.cache
+cp -u images/* $RPM_BUILD_ROOT%{_datadir}/unxs/html/images/
+cp -u interfaces/admin/templates/images/* $RPM_BUILD_ROOT%{_datadir}/unxs/html/images/
+cp -u interfaces/admin/templates/css/* $RPM_BUILD_ROOT%{_datadir}/unxs/html/css/
+cp `find ./interfaces/admin/templates/ -type f -print` $RPM_BUILD_ROOT%{_datadir}/iDNS/admin/templates/
+cp `find ./interfaces/org/templates/ -type f -print` $RPM_BUILD_ROOT%{_datadir}/iDNS/org/templates/
+install data/*.txt $RPM_BUILD_ROOT%{_datadir}/iDNS/data/
+install setup9/rndc.conf $RPM_BUILD_ROOT%{_sysconfdir}/rndc.conf
+install setup9/rndc.key $RPM_BUILD_ROOT%{_sysconfdir}/rndc.key
+install setup9/* $RPM_BUILD_ROOT%{_datadir}/iDNS/setup9/
+install agents/mysqlcluster/mysqlcluster.sh $RPM_BUILD_ROOT%{_sbindir}
+# %{_bindir}/dig @e.root-servers.net . ns > %{_prefix}/local/share/iDNS/setup9/root.cache
 
-cd interfaces/admin
-%{__make} install
-cd ../org
-%{__make} install
-cd ../thit
-cp bind9-genstats.sh %{_sbindir}/bind9-genstats.sh
-%{__make} install
-cd ../errorlog
-%{__make} install
+for i in admin errorlog org thit
+do
+%{__make} -C interfaces/$i install \
+        DESTDIR=$RPM_BUILD_ROOT \
+        libdir=%{_libdir}
+done
 
-export ISMROOT=%{_prefix}/local/share
-/var/www/unxs/cgi-bin/iDNS.cgi installbind 127.0.0.1
-chmod -R og+x %{_prefix}/local/idns
-cd $RPM_BUILD_DIR
+install interfaces/thit/bind9-genstats.sh $RPM_BUILD_ROOT%{_sbindir}/bind9-genstats.sh
+
+#export ISMROOT=%{_prefix}/local/share
+#%{_datadir}/unxs/cgi-bin/iDNS.cgi installbind 127.0.0.1
+#chmod -R og+x %{_datadir}/unxs/idns
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -104,15 +104,19 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc LICENSE INSTALL
-%{_prefix}/local/share/iDNS
-%{_prefix}/local/idns
-/var/www/unxs/cgi-bin/iDNS.cgi
-/var/www/unxs/cgi-bin/idnsAdmin.cgi
-/var/www/unxs/cgi-bin/idnsOrg.cgi
+%{_datadir}/iDNS
+%dir %attr(740,mysql,mysql) %{_datadir}/iDNS/data
+%{_sysconfdir}/rndc.key
+%{_sysconfdir}/rndc.conf
+%{_datadir}/idns
+%dir %{_datadir}/unxs
+%{_datadir}/unxs/cgi-bin/iDNS.cgi
+%{_datadir}/unxs/cgi-bin/idnsAdmin.cgi
+%{_datadir}/unxs/cgi-bin/idnsOrg.cgi
 %attr(755,root,root) %{_sbindir}/tHitCollector
 %attr(755,root,root) %{_sbindir}/bind9-genstats.sh
 %attr(755,root,root) %{_sbindir}/idns-logerror
-/var/www/unxs/html/images/green.gif
-/var/www/unxs/html/images/red.gif
+%{_datadir}/unxs/html/images/green.gif
+%{_datadir}/unxs/html/images/red.gif
 /var/log/named
 %attr(755,root,root) %{_sbindir}/mysqlcluster.sh
