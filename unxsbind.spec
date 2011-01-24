@@ -1,3 +1,5 @@
+# TODO:
+# - fix makefiles
 Summary:	DNS BIND 9 telco quality manager with quality admin and end-user web interfaces. Also rrdtool graphics
 Name:		unxsbind
 Version:	1.11
@@ -9,12 +11,14 @@ Source0:	http://unixservice.com/source/%{name}-%{version}.tar.gz
 URL:		http://openisp.net/openisp/unxsBind
 Patch0:		%{name}-include.patch
 BuildRequires:	mysql-devel
+BuildRequires:	sed >= 4.0
 BuildRequires:	ucidr
 BuildRequires:	zlib-devel
 Requires:	bind >= 9.3.4
 Requires:	bind-utils
 Requires:	rrdtool
 Requires:	unxsadmin >= 1.2
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 unxsBind iDNS provides a professional DNS BIND 9 manager. For 1 to
@@ -49,11 +53,19 @@ command.
 %prep
 %setup -q
 %patch0 -p1
+%{__sed} -e 's/getline/unx_getline/' -i cgi.c
 
 %build
 %{__make} \
 	DESTDIR=$RPM_BUILD_ROOT \
 	libdir=%{_libdir}
+
+for i in admin errorlog org thit
+do
+	%{__make} -C interfaces/$i \
+		DESTDIR=$RPM_BUILD_ROOT \
+		libdir=%{_libdir}
+done
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -87,9 +99,9 @@ install agents/mysqlcluster/mysqlcluster.sh $RPM_BUILD_ROOT%{_sbindir}
 
 for i in admin errorlog org thit
 do
-%{__make} -C interfaces/$i install \
-        DESTDIR=$RPM_BUILD_ROOT \
-        libdir=%{_libdir}
+	%{__make} -C interfaces/$i install \
+	        DESTDIR=$RPM_BUILD_ROOT \
+	        libdir=%{_libdir}
 done
 
 install interfaces/thit/bind9-genstats.sh $RPM_BUILD_ROOT%{_sbindir}/bind9-genstats.sh
