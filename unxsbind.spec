@@ -52,7 +52,7 @@ command.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch -P0 -p1
 %{__sed} -e 's/getline/unx_getline/' -i cgi.c
 
 %build
